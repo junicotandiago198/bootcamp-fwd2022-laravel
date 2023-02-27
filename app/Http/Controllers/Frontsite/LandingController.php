@@ -27,11 +27,7 @@ class LandingController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function __construct()
-    {
-        $this->middleware('auth');
-    }
-
+    
     public function index()
     {
         return view('pages.frontsite.landing-page.index');
