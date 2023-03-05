@@ -37,11 +37,14 @@ Route::group(['middleware' => ['auth:sanctum', 'verified']],
     Route::resource('payment', PaymentController::class);
 });
 
-Route::group(['prefix' => 'backsite', 'as' => 'backsite', 'middleware' => ['auth:sanctum', 'verified']], 
+Route::group(['prefix' => 'backsite', 'as' => 'backsite.', 'middleware' => ['auth:sanctum', 'verified']], 
     function() {
 
-    // dashboard page
+    // dashboard
     Route::resource('dashboard', DashboardController::class);
+
+    // permission
+    
 
     });
 
