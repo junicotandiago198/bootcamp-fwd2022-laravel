@@ -9,7 +9,8 @@ use App\Http\Controllers\Frontsite\PaymentController;
 
 // backsite
 use App\Http\Controllers\Backsite\DashboardController;
-
+use App\Http\Controllers\Backsite\TypeUserController;
+use App\Http\Controllers\Backsite\SpecialistController;
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -43,8 +44,11 @@ Route::group(['prefix' => 'backsite', 'as' => 'backsite.', 'middleware' => ['aut
     // dashboard
     Route::resource('dashboard', DashboardController::class);
 
-    // permission
-    
+    // type user
+    Route::resource('type_user', TypeUserController::class);
+
+    // type specialist
+    Route::resource('specialist', SpecialistController::class);
 
     });
 

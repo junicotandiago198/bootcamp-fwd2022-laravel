@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Frontsite;
+namespace App\Http\Controllers\Backsite;
 
 use App\Http\Controllers\Controller;
 
@@ -13,14 +13,9 @@ use Symfony\Component\HttpFoundation\Response;
 use Auth;
 
 // modele here
-use App\Models\User;
-use App\Models\Operational\Doctor;
-use App\Models\MasterData\Specialist;
+use App\Models\MasterData\TypeUser;
 
-// thirdparty package
-
-
-class LandingController extends Controller
+class TypeUserController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -32,10 +27,14 @@ class LandingController extends Controller
     {
         $this->middleware('auth');
     }
-    
+
     public function index()
     {
-        return view('pages.frontsite.landing-page.index');
+        $type_user = TypeUser::all();
+        // $type_user = TypeUser::orderBy('id', 'desc')->limit(3)->get();
+
+        return view('pages.backsite.management-access.type-user.index', compact($type_user));
+
     }
 
     /**
