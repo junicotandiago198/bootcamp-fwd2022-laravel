@@ -121,6 +121,7 @@ class RoleController extends Controller
      */
     public function destroy(Role $role)
     {
+        // untuk menghapus data pada foreignkeynya juga
         $role->forceDelete();
 
         alert()->success('Success Message', 'Successfully deleted role');
