@@ -4,8 +4,10 @@ namespace App\Http\Controllers\Backsite;
 
 use App\Http\Controllers\Controller;
 
-// use liblary
+// use liblary here
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Str;
+use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
 
 // request
@@ -15,6 +17,7 @@ use App\Http\Requests\Doctor\UpdateDoctorRequest;
 // Use Everithing here
 use Gate;
 use Auth;
+use File;
 
 // modele here
 use App\Models\Operational\Doctor;
@@ -60,9 +63,35 @@ class DoctorController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store()
+    public function store(StoreDoctorRequest $request)
     {
-        //
+        // get all request from frontsite
+        $data = $request->all();
+
+        // re format before push to table
+        $data['fee'] = str_replace(',', '', $data['fee']);
+        $data['fee'] = str_replace('IDR ', '', $data['fee']);
+
+        // upload process here
+        $path = public_path('app/public/assets/file-doctor');
+        if(!File::isDirectory($path)){
+            $response = Storage::makeDirectory('public/assets/file-doctor');
+        }
+
+        // change file locations
+        if(isset($data['photo'])){
+            $data['photo'] = $request->file('photo')->store(
+                'assets/file-doctor', 'public'
+            );
+        }else{
+            $data['photo'] = "";
+        }
+
+        // store to database
+        $doctor = Doctor::create($data);
+
+        alert()->success('Success Message', 'Successfully added new doctor');
+        return redirect()->route('backsite.doctor.index');
     }
 
     /**
@@ -101,9 +130,41 @@ class DoctorController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update($id)
+    public function update(UpdateDoctorRequest $request, Doctor $doctor)
     {
-        //
+        // get all request from frontsite
+        $data = $request->all();
+
+        // re format before push to table
+        $data['fee'] = str_replace(',', '', $data['fee']);
+        $data['fee'] = str_replace('IDR ', '', $data['fee']);
+
+        // upload process here
+        // change format photo
+        if(isset($data['photo'])){
+
+            // first checking old photo to delete from storage
+            $get_item = $doctor['photo'];
+
+            // change file locations
+            $data['photo'] = $request->file('photo')->store(
+                'assets/file-doctor', 'public'
+            );
+
+            // delete old photo from storage
+            $data_old = 'storage/'.$get_item;
+            if (File::exists($data_old)) {
+                File::delete($data_old);
+            }else{
+                File::delete('storage/app/public/'.$get_item);
+            }
+        }
+
+        // update to database
+        $doctor->update($data);
+
+        alert()->success('Success Message', 'Successfully updated doctor');
+        return redirect()->route('backsite.doctor.index');
     }
 
     /**
