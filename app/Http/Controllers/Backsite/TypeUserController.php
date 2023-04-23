@@ -9,7 +9,7 @@ use Illuminate\Support\Facades\Storage;
 use Symfony\Component\HttpFoundation\Response;
 
 // Use Everithing here
-// use Gate;
+use Gate;
 use Auth;
 
 // modele here
@@ -30,10 +30,11 @@ class TypeUserController extends Controller
 
     public function index()
     {
-        $type_user = TypeUser::all();
-        // $type_user = TypeUser::orderBy('id', 'desc')->limit(3)->get();
+        abort_if(Gate::denies('type_user_access'), Response::HTTP_FORBIDDEN, '403 Forbidden');
 
-        return view('pages.backsite.management-access.type-user.index', compact($type_user));
+        $type_user = TypeUser::all();
+
+        return view('pages.backsite.management-access.type-user.index', compact('type_user'));
 
     }
 
